@@ -1,0 +1,37 @@
+*.gem
+*.rbc
+.bundle
+.config
+coverage
+InstalledFiles
+lib/bundler/man
+pkg
+rdoc
+spec/reports
+test/tmp
+test/version_tmp
+tmp
+*.bundle
+*.so
+*.o
+*.a
+mkmf.log
+
+# Gemfile.lock files for different versions
+gemfiles/*.lock
+Gemfile.lock
+
+# Coverage reports
+coverage/
+.resultset.json
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db

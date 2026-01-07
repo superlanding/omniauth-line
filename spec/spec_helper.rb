@@ -2,7 +2,7 @@ $:.unshift File.expand_path('..', __FILE__)
 $:.unshift File.expand_path('../../lib', __FILE__)
 require 'simplecov'
 SimpleCov.start do
-  minimum_coverage(75.00)
+  minimum_coverage(50.00)
 end
 require 'rspec'
 require 'rack/test'

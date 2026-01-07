@@ -45,4 +45,25 @@ An example auth hash available in `request.env['omniauth.auth']`:
 
 ## Supported Rubies
 
-OmniAuth Line is tested under 2.1.x, 2.2.x.
+OmniAuth Line is tested and compatible with:
+
+- Ruby 2.7.6 + Rails 6 / Rails 7
+- Ruby 3.0.7 + Rails 6 / Rails 7
+- Ruby 3.1.7 + Rails 6 / Rails 7
+
+## Development
+
+After checking out the repo, run `bundle install` to install dependencies.
+
+To run tests for all supported Ruby/Rails combinations:
+
+```bash
+bin/test_all
+```
+
+To run tests with a specific Rails version:
+
+```bash
+BUNDLE_GEMFILE=gemfiles/rails_6.0.gemfile bundle exec rspec
+BUNDLE_GEMFILE=gemfiles/rails_7.0.gemfile bundle exec rspec
+```

@@ -43,6 +43,7 @@ describe OmniAuth::Strategies::Line do
   describe 'info' do
     before do
       allow(subject).to receive(:raw_info).and_return(raw_info_hash)
+      allow(subject).to receive(:email).and_return('test@example.com')
     end
 
     it 'should returns the name' do
@@ -55,6 +56,10 @@ describe OmniAuth::Strategies::Line do
 
     it 'should returns the description' do
       expect(subject.info[:description]).to eq(raw_info_hash['statusMessage'])
+    end
+
+    it 'should returns the email' do
+      expect(subject.info[:email]).to eq('test@example.com')
     end
   end
 
