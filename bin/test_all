@@ -9,30 +9,68 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 echo "========================================="
-echo "Running tests for all Ruby/Rails combinations"
+echo "Running tests for all Ruby versions"
 echo "========================================="
 echo ""
 
-GEMFILES=(
-  "gemfiles/rails_6.0.gemfile"
-  "gemfiles/rails_7.0.gemfile"
+RUBY_VERSIONS=(
+  "2.7.6"
+  "3.0.7"
+  "3.1.7"
 )
 
 FAILED_TESTS=()
 PASSED_TESTS=()
 
-for gemfile in "${GEMFILES[@]}"; do
-  echo -e "${YELLOW}Testing with $gemfile${NC}"
+# Check if rbenv or rvm is available
+if command -v rbenv &> /dev/null; then
+  VERSION_MANAGER="rbenv"
+elif command -v rvm &> /dev/null; then
+  VERSION_MANAGER="rvm"
+else
+  echo -e "${YELLOW}Warning: Neither rbenv nor rvm found. Testing with current Ruby version only.${NC}"
   echo "========================================="
 
-  export BUNDLE_GEMFILE=$gemfile
+  ruby_version=$(ruby -v)
+  echo -e "${YELLOW}Current Ruby: $ruby_version${NC}"
+  echo "========================================="
 
-  if bundle install --quiet && bundle exec rspec; then
-    echo -e "${GREEN}✓ Tests passed with $gemfile${NC}"
-    PASSED_TESTS+=("$gemfile")
+  if bundle install && bundle exec rspec; then
+    echo -e "${GREEN}✓ Tests passed${NC}"
+    exit 0
   else
-    echo -e "${RED}✗ Tests failed with $gemfile${NC}"
-    FAILED_TESTS+=("$gemfile")
+    echo -e "${RED}✗ Tests failed${NC}"
+    exit 1
+  fi
+fi
+
+for version in "${RUBY_VERSIONS[@]}"; do
+  echo -e "${YELLOW}Testing with Ruby $version${NC}"
+  echo "========================================="
+
+  # Check if version is installed
+  if [ "$VERSION_MANAGER" = "rbenv" ]; then
+    if ! rbenv versions | grep -q "$version"; then
+      echo -e "${YELLOW}⚠ Ruby $version not installed (skipping)${NC}"
+      echo ""
+      continue
+    fi
+    RUBY_CMD="rbenv local $version && "
+  else
+    if ! rvm list | grep -q "$version"; then
+      echo -e "${YELLOW}⚠ Ruby $version not installed (skipping)${NC}"
+      echo ""
+      continue
+    fi
+    RUBY_CMD="rvm use $version && "
+  fi
+
+  if eval "$RUBY_CMD bundle install --quiet && bundle exec rspec"; then
+    echo -e "${GREEN}✓ Tests passed with Ruby $version${NC}"
+    PASSED_TESTS+=("Ruby $version")
+  else
+    echo -e "${RED}✗ Tests failed with Ruby $version${NC}"
+    FAILED_TESTS+=("Ruby $version")
   fi
 
   echo ""
